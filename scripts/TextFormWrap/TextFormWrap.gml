@@ -15,6 +15,7 @@ function TextFormWrap(_glyphArray, _font, _limitWidth, _perChar)
     
     var _glyphDataMap = TextUtilsCacheFontInfo(_font).fastGlyphs;
     
+    var _tagStack = undefined;
     var _x = 0;
     var _i = 0;
     
@@ -25,8 +26,8 @@ function TextFormWrap(_glyphArray, _font, _limitWidth, _perChar)
         
         repeat(array_length(_glyphArray) div 2)
         {
-            var _tag  = _glyphArray[_i];
-            var _code = _glyphArray[_i+1];
+            var _foundTagArray = _glyphArray[_i];
+            var _code          = _glyphArray[_i+1];
             
             var _glyphData = _glyphDataMap[? _code];
             
@@ -67,6 +68,23 @@ function TextFormWrap(_glyphArray, _font, _limitWidth, _perChar)
                         }
                         
                         array_copy(_lineArray, array_length(_lineArray), _glyphArray, _wordStart, _wordLength);
+                        
+                        //Pop the tag stack (if we have one)
+                        if (_tagStack != undefined)
+                        {
+                            var _index = array_length(_lineArray) - _wordLength;
+                            
+                            var _startTagArray = _lineArray[_index];
+                            if (_startTagArray != undefined)
+                            {
+                                array_copy(_tagStack, array_length(_tagStack), _startTagArray, 0, array_length(_startTagArray));
+                            }
+                            
+                            _lineArray[_index] = _tagStack;
+                            
+                            _tagStack = undefined;
+                        }
+                        
                         _x += _wordShift;
                     }
                     
@@ -77,8 +95,18 @@ function TextFormWrap(_glyphArray, _font, _limitWidth, _perChar)
                 //But don't push whitespace if we're at the start of a line
                 if ((_x > 0) && (_x + _glyphData.shift <= _limitWidth))
                 {
-                    array_push(_lineArray, _tag, _code);
+                    array_push(_lineArray, _foundTagArray, _code);
                     _x += _glyphData.shift;
+                }
+                else
+                {
+                    //We're not going to push this character which might cause problems if that character has tags
+                    //We push all tags for this glyph onto a stack which is popped for the next glyph that gets rendered
+                    if (_foundTagArray != undefined)
+                    {
+                        if (_tagStack == undefined) _tagStack = [];
+                        array_copy(_tagStack, array_length(_tagStack), _foundTagArray, 0, array_length(_foundTagArray));
+                    }
                 }
             }
             else
@@ -94,16 +122,21 @@ function TextFormWrap(_glyphArray, _font, _limitWidth, _perChar)
             
             _i += 2;
         }
+        
+        //Terminator
+        array_push(_lineArray, _tagStack, 0x00);
     }
     else
     {
+        
         repeat((array_length(_glyphArray) div 2)-1)
         {
-            var _tag  = _glyphArray[_i];
-            var _code = _glyphArray[_i+1];
+            var _foundTagArray = _glyphArray[_i];
+            var _code          = _glyphArray[_i+1];
             
             var _glyphData = _glyphDataMap[? _code];
             
+            //If this glyph is too wide for the line, push it to the next line
             if ((_x > 0) && (_x + _glyphData.w > _limitWidth))
             {
                 _lineArray = [];
@@ -112,15 +145,39 @@ function TextFormWrap(_glyphArray, _font, _limitWidth, _perChar)
                 _x = 0;
             }
             
+            //Only push this glyph to the line if it's not whitespace, or if we're in the middle of the line
             if (((_bidiMap[? _code] ?? BIDI.L2R) != BIDI.WHITESPACE) || ((_x > 0) && (_x + _glyphData.w <= _limitWidth)))
             {
-                array_push(_lineArray, _tag, _code);
+                //Pop the tag stack (if we have one)
+                if (_tagStack == undefined)
+                {
+                    array_push(_lineArray, _foundTagArray, _code);
+                }
+                else
+                {
+                    array_copy(_tagStack, array_length(_tagStack), _foundTagArray, 0, array_length(_foundTagArray));
+                    array_push(_lineArray, _tagStack, _code);
+                    _tagStack = undefined;
+                }
+            }
+            else
+            {
+                //We're not going to push this character which might cause problems if that character has tags
+                //We push all tags for this glyph onto a stack which is popped for the next glyph that gets rendered
+                if (_foundTagArray != undefined)
+                {
+                    if (_tagStack == undefined) _tagStack = [];
+                    array_copy(_tagStack, array_length(_tagStack), _foundTagArray, 0, array_length(_foundTagArray));
+                }
             }
             
             _x += _glyphData.shift;
             _i += 2;
         }
     }
+    
+    //Terminator
+    array_push(_lineArray, _tagStack, 0x00);
     
     return _linesArray;
 }

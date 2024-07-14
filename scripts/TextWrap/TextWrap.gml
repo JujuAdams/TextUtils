@@ -121,5 +121,8 @@ function TextWrap(_glyphArray, _font, _limitWidth, _perChar)
         }
     }
     
+    //Terminator
+    array_push(_lineArray, 0x00);
+    
     return _linesArray;
 }
