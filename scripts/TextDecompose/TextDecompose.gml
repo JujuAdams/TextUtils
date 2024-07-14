@@ -1,21 +1,39 @@
 // Feather disable all
 
+/// Decomposes a string into a "breakdown".
+/// 
 /// @param string
 
 function TextDecompose(_string)
 {
     static _scope = new (function() constructor
     {
-        __result = [];
+        __linesArray = [];
         
         __Reset = function(_string)
         {
-            array_resize(__result, string_length(_string));
+            __lineArray = [];
+            __linesArray = [__lineArray];
         }
         
         __Foreach = function(_char, _pos)
         {
-            __result[_pos-1] = ord(_char);
+            var _code = ord(_char);
+            if (_code < 0x20)
+            {
+                if (_code == 0x0A)
+                {
+                    //Terminator
+                    array_push(__lineArray, 0x00);
+                    
+                    __lineArray = [];
+                    array_push(__linesArray, __lineArray);
+                }
+            }
+            else
+            {
+                array_push(__lineArray, _code);
+            }
         }
         
     })();
@@ -24,6 +42,6 @@ function TextDecompose(_string)
     
     string_foreach(_string, _scope.__Foreach);
     
-    array_push(_scope.__result, 0x00);
-    return _scope.__result;
+    array_push(_scope.__lineArray, 0x00);
+    return _scope.__linesArray;
 }
