@@ -42,6 +42,7 @@ function TextGlyphData()
         
         var _map = bidiMap;
         for(var _i = 0x0000; _i <= 0x0009; _i++) _map[? _i] = BIDI.SYMBOL;
+        _map[? 0x0000] = BIDI.WHITESPACE;
         _map[? 0x000A] = BIDI.ISOLATED;
         _map[? 0x000B] = BIDI.SYMBOL;
         _map[? 0x000C] = BIDI.SYMBOL;

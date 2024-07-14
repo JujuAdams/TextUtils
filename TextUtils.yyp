@@ -46,6 +46,7 @@
     {"id":{"name":"TextFormParseHebrew","path":"scripts/TextFormParseHebrew/TextFormParseHebrew.yy",},},
     {"id":{"name":"TextFormParseThai","path":"scripts/TextFormParseThai/TextFormParseThai.yy",},},
     {"id":{"name":"TextFormRecompose","path":"scripts/TextFormRecompose/TextFormRecompose.yy",},},
+    {"id":{"name":"TextFormWrap","path":"scripts/TextFormWrap/TextFormWrap.yy",},},
     {"id":{"name":"TextGlyphData","path":"scripts/TextGlyphData/TextGlyphData.yy",},},
     {"id":{"name":"TextParseArabic","path":"scripts/TextParseArabic/TextParseArabic.yy",},},
     {"id":{"name":"TextParseDevanagari","path":"scripts/TextParseDevanagari/TextParseDevanagari.yy",},},

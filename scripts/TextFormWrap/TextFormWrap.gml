@@ -5,7 +5,7 @@
 /// @param width
 /// @param perChar
 
-function TextWrap(_glyphArray, _font, _limitWidth, _perChar)
+function TextFormWrap(_glyphArray, _font, _limitWidth, _perChar)
 {
     static _bidiMap = TextGlyphData().bidiMap;
     
@@ -23,13 +23,14 @@ function TextWrap(_glyphArray, _font, _limitWidth, _perChar)
         var _wordStart = 0;
         var _inWhitespace = false;
         
-        repeat(array_length(_glyphArray))
+        repeat(array_length(_glyphArray) div 2)
         {
-            var _code = _glyphArray[_i];
+            var _tag  = _glyphArray[_i];
+            var _code = _glyphArray[_i+1];
+            
             var _glyphData = _glyphDataMap[? _code];
             
-            var _whitespace = ((_code == 0) || ((_bidiMap[? _code] ?? BIDI.L2R) == BIDI.WHITESPACE));
-            if (_whitespace)
+            if ((_bidiMap[? _code] ?? BIDI.L2R) == BIDI.WHITESPACE)
             {
                 if (not _inWhitespace)
                 {
@@ -43,11 +44,11 @@ function TextWrap(_glyphArray, _font, _limitWidth, _perChar)
                         var _wordShift = 0;
                         var _wordWidth = 0;
                         
-                        var _j = _wordStart;
-                        repeat(_wordLength-1)
+                        var _j = _wordStart + 1;
+                        repeat((_wordLength div 2)-1)
                         {
                             _wordWidth += _glyphDataMap[? _glyphArray[_j]].shift;
-                            ++_j;
+                            _j += 2;
                         }
                         
                         _wordShift = _wordWidth;
@@ -76,7 +77,7 @@ function TextWrap(_glyphArray, _font, _limitWidth, _perChar)
                 //But don't push whitespace if we're at the start of a line
                 if ((_x > 0) && (_x + _glyphData.shift <= _limitWidth))
                 {
-                    array_push(_lineArray, _code);
+                    array_push(_lineArray, _tag, _code);
                     _x += _glyphData.shift;
                 }
             }
@@ -91,17 +92,17 @@ function TextWrap(_glyphArray, _font, _limitWidth, _perChar)
                 }
             }
             
-            ++_i;
+            _i += 2;
         }
     }
     else
     {
-        repeat(array_length(_glyphArray)-1)
+        repeat((array_length(_glyphArray) div 2)-1)
         {
-            var _code = _glyphArray[_i];
+            var _tag  = _glyphArray[_i];
+            var _code = _glyphArray[_i+1];
             
             var _glyphData = _glyphDataMap[? _code];
-            var _whitespace = ((_bidiMap[? _code] ?? BIDI.L2R) == BIDI.WHITESPACE);
             
             if ((_x > 0) && (_x + _glyphData.w > _limitWidth))
             {
@@ -111,13 +112,13 @@ function TextWrap(_glyphArray, _font, _limitWidth, _perChar)
                 _x = 0;
             }
             
-            if ((not _whitespace) || ((_x > 0) && (_x + _glyphData.w <= _limitWidth)))
+            if (((_bidiMap[? _code] ?? BIDI.L2R) != BIDI.WHITESPACE) || ((_x > 0) && (_x + _glyphData.w <= _limitWidth)))
             {
-                array_push(_lineArray, _code);
+                array_push(_lineArray, _tag, _code);
             }
             
             _x += _glyphData.shift;
-            ++_i;
+            _i += 2;
         }
     }
     
