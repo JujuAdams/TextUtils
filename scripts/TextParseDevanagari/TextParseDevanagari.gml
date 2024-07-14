@@ -58,6 +58,7 @@ function TextParseDevanagari(_inText)
     static _lookupMap      = TextGlyphData().devanagariLookupMap;
     
     var _charArray = TextDecompose(_inText);
+    array_pop(_charArray);
     var _stringLength = array_length(_charArray);
     
     array_push(_charArray, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF);

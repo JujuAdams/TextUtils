@@ -12,7 +12,6 @@ function TextParseArabic(_string)
     static _isolatedMap = TextGlyphData().arabicIsolatedMap;
     
     var _glyphArray = TextDecompose(_string);
-    array_push(_glyphArray, 0x00);
     
     var _outGlyphArray = [];
     var _prevJoinNext = false;

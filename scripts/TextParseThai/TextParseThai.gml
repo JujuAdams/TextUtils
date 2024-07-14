@@ -10,7 +10,6 @@ function TextParseThai(_string)
     static _upperMap         = TextGlyphData().thaiUpperMap;
     
     var _glyphArray = TextDecompose(_string);
-    array_push(_glyphArray, 0x00);
     
     var _outArray = [];
     

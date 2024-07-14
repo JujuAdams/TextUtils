@@ -24,5 +24,6 @@ function TextDecompose(_string)
     
     string_foreach(_string, _scope.__Foreach);
     
+    array_push(_scope.__result, 0x00);
     return _scope.__result;
 }
