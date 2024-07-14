@@ -111,7 +111,7 @@ function TextParseArabic(_string)
         ++_i;
     }
     
-    TextBiDiReorder(_outGlyphArray, true, false);
+    __TextBiDiReorder(_outGlyphArray, true, false);
     
     return TextRecompose(_outGlyphArray, false);
 }

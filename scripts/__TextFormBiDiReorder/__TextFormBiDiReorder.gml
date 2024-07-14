@@ -2,26 +2,26 @@
 /// @param rightToLeftHint
 /// @param [copy=true]
 
-function TextBiDiReorder(_glyphArray, _rightToLeftHint, _copy = true)
+function __TextFormBiDiReorder(_glyphArray, _rightToLeftHint, _copy = true)
 {
     static _bidiMap = TextGlyphData().bidiMap;
     
     var _overallBidi = _rightToLeftHint? BIDI.R2L : BIDI.L2R;
     if (_copy) _glyphArray = variable_clone(_glyphArray);
     
-    var _length = array_length(_glyphArray);
+    var _length = array_length(_glyphArray)/2 - 1;
     if (_length <= 1) return _glyphArray
     
     var _bidiArray = array_create(_length, undefined);
     
     //First sweep to set basic bi-directional information
-    var _i = 0;
+    var _i = 1;
     repeat(_length)
     {
         var _glyph = _glyphArray[_i];
         var _bidi  = _bidiMap[? _glyph];
         _bidiArray[_i] = _bidi ?? BIDI.L2R;
-        ++_i;
+        _i += 2;
     }
     
     var _funcDetermineBidi = function(_funcDetermineBidi, _overallBidi, _bidiArray, _length, _start, _searchDirection)
@@ -113,6 +113,21 @@ function TextBiDiReorder(_glyphArray, _rightToLeftHint, _copy = true)
         }
     }
     
+    var _funcReverse = function(_glyphArray, _offset, _length)
+    {
+        array_reverse_ext(_glyphArray, 2*_offset, 2*_length);
+        
+        var _i = 2*_offset;
+        repeat(_length)
+        {
+            var _temp = _glyphArray[_i];
+            _glyphArray[_i] = _glyphArray[_i+1];
+            _glyphArray[_i+1] = _temp;
+            
+            _i += 2;
+        }
+    }
+    
     //Final pass to determine directionality for all glyphs
     var _i = 0;
     repeat(_length)
@@ -130,7 +145,7 @@ function TextBiDiReorder(_glyphArray, _rightToLeftHint, _copy = true)
         var _incomingBidi = _bidiArray[_i];
         if (_incomingBidi != _currentBidi)
         {
-            if (_currentBidi != _overallBidi) array_reverse_ext(_glyphArray, _start, _i - _start);
+            if (_currentBidi != _overallBidi) _funcReverse(_glyphArray, _start, _i - _start);
             _currentBidi = _incomingBidi;
             _start = _i;
         }
@@ -139,10 +154,10 @@ function TextBiDiReorder(_glyphArray, _rightToLeftHint, _copy = true)
     }
     
     //Resolve the final stretch
-    if (_currentBidi != _overallBidi) array_reverse_ext(_glyphArray, _start, _i - _start);
+    if (_currentBidi != _overallBidi) _funcReverse(_glyphArray, _start, _i - _start);
     
     //If we're in right-to-left mode then reverse the whole lot
-    if (_overallBidi == BIDI.R2L) array_reverse_ext(_glyphArray);
+    if (_overallBidi == BIDI.R2L) _funcReverse(_glyphArray, 0, _length);
     
     return _glyphArray;
 }
