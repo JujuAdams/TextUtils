@@ -39,6 +39,7 @@
     {"id":{"name":"__TextFormBiDiReorder","path":"scripts/__TextFormBiDiReorder/__TextFormBiDiReorder.yy",},},
     {"id":{"name":"TextDecompose","path":"scripts/TextDecompose/TextDecompose.yy",},},
     {"id":{"name":"TextFormDecompose","path":"scripts/TextFormDecompose/TextFormDecompose.yy",},},
+    {"id":{"name":"TextFormParseArabic","path":"scripts/TextFormParseArabic/TextFormParseArabic.yy",},},
     {"id":{"name":"TextFormParseHebrew","path":"scripts/TextFormParseHebrew/TextFormParseHebrew.yy",},},
     {"id":{"name":"TextFormRecompose","path":"scripts/TextFormRecompose/TextFormRecompose.yy",},},
     {"id":{"name":"TextGlyphData","path":"scripts/TextGlyphData/TextGlyphData.yy",},},
