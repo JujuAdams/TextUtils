@@ -50,268 +50,275 @@
 /// 4) Setting Krutidev font glyph ranges is a faff. Not the worst thing in the world, but worth
 ///    bearing in mind.
 /// 
-/// @param unicodeText
+/// @param breakdownArray
 
-function TextFormattedTransformDevanagari(_inText)
+function TextFormattedTransformDevanagari(_breakdownArray)
 {
     static _matraLookupMap = TextGlyphData().devanagariMatraMap;
     static _lookupMap      = TextGlyphData().devanagariLookupMap;
     
-    var _charArray = TextFormattedDecompose(_inText);
-    
-    array_pop(_charArray);
-    array_pop(_charArray);
-    
-    var _stringLength = (array_length(_charArray) / 2);
-    
-    array_push(_charArray, undefined, 0xFFFF,
-                           undefined, 0xFFFF,
-                           undefined, 0xFFFF,
-                           undefined, 0xFFFF);
-    
-    
-    
-    #region Transform quotes and split up nukta ligatures
-    
-    var _inSingleQuote = false;
-    var _inDoubleQuote = false;
-    var _i = 1;
-    repeat(_stringLength)
+    var _line = 0;
+    repeat(array_length(_breakdownArray))
     {
-        switch(_charArray[_i])
-        {
-            //Set up alternating single quote marks
-            case ord("'"):
-                _inSingleQuote = !_inSingleQuote;
-                _charArray[_i] = _inSingleQuote? ord("^") : ord("*");
-            break;
-            
-            //Set up alternating double quote marks
-            case ord("\""):
-                _inDoubleQuote = !_inDoubleQuote;
-                _charArray[_i] = _inDoubleQuote? ord("ß") : ord("Þ");
-            break;
-            
-            //Split up nukta ligatures into their componant parts
-            case ord("ऩ"):
-                _charArray[_i] = ord("न");
-                array_insert(_charArray, _i+1, undefined, 0x093C); _i += 2; ++_stringLength; //Nukta
-            break;
-            
-            case ord("ऱ"):
-                _charArray[_i] = ord("र");
-                array_insert(_charArray, _i+1, undefined, 0x093C); _i += 2; ++_stringLength; //Nukta
-            break;
-            
-            case ord("क़"):
-                _charArray[_i] = ord("क");
-                array_insert(_charArray, _i+1, undefined, 0x093C); _i += 2; ++_stringLength; //Nukta
-            break;
-            
-            case ord("ख़"):
-                _charArray[_i] = ord("ख");
-                array_insert(_charArray, _i+1, undefined, 0x093C); _i += 2; ++_stringLength; //Nukta
-            break;
-            
-            case ord("ग़"):
-                _charArray[_i] = ord("ग");
-                array_insert(_charArray, _i+1, undefined, 0x093C); _i += 2; ++_stringLength; //Nukta
-            break;
-            
-            case ord("ज़"):
-                _charArray[_i] = ord("ज");
-                array_insert(_charArray, _i+1, undefined, 0x093C); _i += 2; ++_stringLength; //Nukta
-            break;
-            
-            case ord("ड़"):
-                _charArray[_i] = ord("ड");
-                array_insert(_charArray, _i+1, undefined, 0x093C); _i += 2; ++_stringLength; //Nukta
-            break;
-            
-            case ord("ढ़"):
-                _charArray[_i] = ord("ढ");
-                array_insert(_charArray, _i+1, undefined, 0x093C); _i += 2; ++_stringLength; //Nukta
-            break;
-            
-            case ord("फ़"):
-                _charArray[_i] = ord("फ");
-                array_insert(_charArray, _i+1, undefined, 0x093C); _i += 2; ++_stringLength; //Nukta
-            break;
-            
-            case ord("य़"):
-                _charArray[_i] = ord("य");
-                array_insert(_charArray, _i+1, undefined, 0x093C); _i += 2; ++_stringLength; //Nukta
-            break;
-        }
+        var _charArray = _breakdownArray[_line];
         
-        _i += 2;
-    }
-    
-    #endregion
-    
-    
-    
-    #region Reposition ि  to the front of the word and replace it with an "f"
-    
-    //TODO - Log where ि  is found during the nukta ligature sweep
-    var _i = 3; //Start at the second char because we don't care if the string starts with 0x093F (Vowel Sign I)
-    repeat(_stringLength-1)
-    {
-        var _char = _charArray[_i];
-        if (_char == ord("ि"))
+        array_pop(_charArray);
+        array_pop(_charArray);
+        
+        var _stringLength = (array_length(_charArray) / 2);
+        
+        array_push(_charArray, undefined, 0xFFFF,
+                               undefined, 0xFFFF,
+                               undefined, 0xFFFF,
+                               undefined, 0xFFFF);
+        
+        
+        
+        #region Transform quotes and split up nukta ligatures
+        
+        var _inSingleQuote = false;
+        var _inDoubleQuote = false;
+        var _i = 1;
+        repeat(_stringLength)
         {
-            var _fPosition = _i;
-            
-            var _j = _i - 2;
-            while(_j >= 1)
+            switch(_charArray[_i])
             {
-                if (_charArray[_j] == 0x094D)
-                {
-                    //If we find a virama behind us keep tracking backwards
-                    //We go two indexes backwards because virama (should) always follows another character
-                    _j -= 4;
-                }
-                else if (_charArray[_j] == 0x093C) //Nukta
-                {
-                    _j -= 2;
-                }
-                else
-                {
-                    break;
-                }
+                //Set up alternating single quote marks
+                case ord("'"):
+                    _inSingleQuote = !_inSingleQuote;
+                    _charArray[_i] = _inSingleQuote? ord("^") : ord("*");
+                break;
+                
+                //Set up alternating double quote marks
+                case ord("\""):
+                    _inDoubleQuote = !_inDoubleQuote;
+                    _charArray[_i] = _inDoubleQuote? ord("ß") : ord("Þ");
+                break;
+                
+                //Split up nukta ligatures into their componant parts
+                case ord("ऩ"):
+                    _charArray[_i] = ord("न");
+                    array_insert(_charArray, _i+1, undefined, 0x093C); _i += 2; ++_stringLength; //Nukta
+                break;
+                
+                case ord("ऱ"):
+                    _charArray[_i] = ord("र");
+                    array_insert(_charArray, _i+1, undefined, 0x093C); _i += 2; ++_stringLength; //Nukta
+                break;
+                
+                case ord("क़"):
+                    _charArray[_i] = ord("क");
+                    array_insert(_charArray, _i+1, undefined, 0x093C); _i += 2; ++_stringLength; //Nukta
+                break;
+                
+                case ord("ख़"):
+                    _charArray[_i] = ord("ख");
+                    array_insert(_charArray, _i+1, undefined, 0x093C); _i += 2; ++_stringLength; //Nukta
+                break;
+                
+                case ord("ग़"):
+                    _charArray[_i] = ord("ग");
+                    array_insert(_charArray, _i+1, undefined, 0x093C); _i += 2; ++_stringLength; //Nukta
+                break;
+                
+                case ord("ज़"):
+                    _charArray[_i] = ord("ज");
+                    array_insert(_charArray, _i+1, undefined, 0x093C); _i += 2; ++_stringLength; //Nukta
+                break;
+                
+                case ord("ड़"):
+                    _charArray[_i] = ord("ड");
+                    array_insert(_charArray, _i+1, undefined, 0x093C); _i += 2; ++_stringLength; //Nukta
+                break;
+                
+                case ord("ढ़"):
+                    _charArray[_i] = ord("ढ");
+                    array_insert(_charArray, _i+1, undefined, 0x093C); _i += 2; ++_stringLength; //Nukta
+                break;
+                
+                case ord("फ़"):
+                    _charArray[_i] = ord("फ");
+                    array_insert(_charArray, _i+1, undefined, 0x093C); _i += 2; ++_stringLength; //Nukta
+                break;
+                
+                case ord("य़"):
+                    _charArray[_i] = ord("य");
+                    array_insert(_charArray, _i+1, undefined, 0x093C); _i += 2; ++_stringLength; //Nukta
+                break;
             }
             
-            array_delete(_charArray, _fPosition-1, 2);
-            array_insert(_charArray, _j-1, undefined, ord("f")); //TODO - Copy tags
-            
-            _i = _fPosition;
+            _i += 2;
         }
         
-        _i += 2;
-    }
-    
-    #endregion
-    
-    
-    
-    #region Move र् (ra + virama) after matras
-    
-    //Using a for-loop here as _stringLength may change
-    for(var _i = 1; _i < 2*_stringLength; _i += 2)
-    {
-        //TODO - Log where ra-virama is found during the nukta ligature sweep
-        if ((_charArray[_i] == ord("र")) && (_charArray[_i+2] == 0x094D)) //Ra followed by virama
+        #endregion
+        
+        
+        
+        #region Reposition ि  to the front of the word and replace it with an "f"
+        
+        //TODO - Log where ि  is found during the nukta ligature sweep
+        var _i = 3; //Start at the second char because we don't care if the string starts with 0x093F (Vowel Sign I)
+        repeat(_stringLength-1)
         {
-            var _probablePosition = _i + 6;
-            
-            var _charRight = _charArray[_probablePosition];
-            while(ds_map_exists(_matraLookupMap, _charRight))
+            var _char = _charArray[_i];
+            if (_char == ord("ि"))
             {
-                _probablePosition += 2;
-                _charRight = _charArray[_probablePosition];
+                var _fPosition = _i;
+                
+                var _j = _i - 2;
+                while(_j >= 1)
+                {
+                    if (_charArray[_j] == 0x094D)
+                    {
+                        //If we find a virama behind us keep tracking backwards
+                        //We go two indexes backwards because virama (should) always follows another character
+                        _j -= 4;
+                    }
+                    else if (_charArray[_j] == 0x093C) //Nukta
+                    {
+                        _j -= 2;
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+                
+                array_delete(_charArray, _fPosition-1, 2);
+                array_insert(_charArray, _j-1, undefined, ord("f")); //TODO - Copy tags
+                
+                _i = _fPosition;
             }
             
-            array_insert(_charArray, _probablePosition-1, undefined, ord("Z")); //TODO - Copy tags
-            array_delete(_charArray, _i, 4);
-            
-            --_stringLength;
+            _i += 2;
         }
-    }
-    
-    #endregion
-    
-    
-    
-    #region Perform bulk find-replace
-    
-    //Create a 64-bit minibuffer
-    //Fortunately all the characters we're looking for fit into 16 bits and we only need to look for 4 at a time
-    var _oneChar   =                                0x0000;
-    var _twoChar   =              ((_charArray[1] & 0xFFFF) << 16);
-    var _threeChar = _twoChar   | ((_charArray[3] & 0xFFFF) << 32);
-    var _fourChar  = _threeChar | ((_charArray[5] & 0xFFFF) << 48);
-    
-    //Using a for-loop here as _stringLength may change
-    for(var _i = 1; _i < 2*_stringLength; _i += 2)
-    {
-        _oneChar   = _twoChar   >> 16;
-        _twoChar   = _threeChar >> 16;
-        _threeChar = _fourChar  >> 16;
-        _fourChar  = _threeChar | ((_charArray[_i + 6] & 0xFFFF) << 48);
         
-        //Try to find a matching substring
-        var _foundLength = 4;
-        var _replacementArray = _lookupMap[? _fourChar];
+        #endregion
         
-        if (_replacementArray == undefined)
+        
+        
+        #region Move र् (ra + virama) after matras
+        
+        //Using a for-loop here as _stringLength may change
+        for(var _i = 1; _i < 2*_stringLength; _i += 2)
         {
-            _foundLength = 3;
-            _replacementArray = _lookupMap[? _threeChar];
+            //TODO - Log where ra-virama is found during the nukta ligature sweep
+            if ((_charArray[_i] == ord("र")) && (_charArray[_i+2] == 0x094D)) //Ra followed by virama
+            {
+                var _probablePosition = _i + 6;
+                
+                var _charRight = _charArray[_probablePosition];
+                while(ds_map_exists(_matraLookupMap, _charRight))
+                {
+                    _probablePosition += 2;
+                    _charRight = _charArray[_probablePosition];
+                }
+                
+                array_insert(_charArray, _probablePosition-1, undefined, ord("Z")); //TODO - Copy tags
+                array_delete(_charArray, _i, 4);
+                
+                --_stringLength;
+            }
+        }
+        
+        #endregion
+        
+        
+        
+        #region Perform bulk find-replace
+        
+        //Create a 64-bit minibuffer
+        //Fortunately all the characters we're looking for fit into 16 bits and we only need to look for 4 at a time
+        var _oneChar   =                                0x0000;
+        var _twoChar   =              ((_charArray[1] & 0xFFFF) << 16);
+        var _threeChar = _twoChar   | ((_charArray[3] & 0xFFFF) << 32);
+        var _fourChar  = _threeChar | ((_charArray[5] & 0xFFFF) << 48);
+        
+        //Using a for-loop here as _stringLength may change
+        for(var _i = 1; _i < 2*_stringLength; _i += 2)
+        {
+            _oneChar   = _twoChar   >> 16;
+            _twoChar   = _threeChar >> 16;
+            _threeChar = _fourChar  >> 16;
+            _fourChar  = _threeChar | ((_charArray[_i + 6] & 0xFFFF) << 48);
+            
+            //Try to find a matching substring
+            var _foundLength = 4;
+            var _replacementArray = _lookupMap[? _fourChar];
             
             if (_replacementArray == undefined)
             {
-                _foundLength = 2;
-                _replacementArray = _lookupMap[? _twoChar];
+                _foundLength = 3;
+                _replacementArray = _lookupMap[? _threeChar];
                 
                 if (_replacementArray == undefined)
                 {
-                    _foundLength = 1;
-                    _replacementArray = _lookupMap[? _oneChar];
+                    _foundLength = 2;
+                    _replacementArray = _lookupMap[? _twoChar];
+                    
+                    if (_replacementArray == undefined)
+                    {
+                        _foundLength = 1;
+                        _replacementArray = _lookupMap[? _oneChar];
+                    }
+                }
+            }
+            
+            //Perform a character replacement if we found any matching substring
+            if (_replacementArray != undefined)
+            {
+                var _replacementLength = array_length(_replacementArray);
+                
+                if ((_foundLength == 1) && (_replacementLength == 1))
+                {
+                    //Shortcut for the most common replacement operation
+                    _charArray[_i] = _replacementArray[0];
+                }
+                else
+                {
+                    //Heavyweight general replacement code... we want to avoid as many delete/insert commands as
+                    //possible as it causes lots of reallocation in the background
+                    
+                    array_delete(_charArray, _i-1, 2*_foundLength); //TODO - Copy tags
+                    
+                    if (_replacementLength == 1)
+                    {
+                        array_insert(_charArray, _i-1, undefined, _replacementArray[0]);
+                    }
+                    else if (_replacementLength == 2)
+                    {
+                        array_insert(_charArray, _i-1, undefined, _replacementArray[0], undefined, _replacementArray[1]);
+                    }
+                    else if (_replacementLength == 3)
+                    {
+                        array_insert(_charArray, _i-1, undefined, _replacementArray[0], undefined, _replacementArray[1], undefined, _replacementArray[2]);
+                    }
+                    else //if (_replacementLength >= 4)
+                    {
+                        array_insert(_charArray, _i-1, undefined, _replacementArray[0], undefined, _replacementArray[1], undefined, _replacementArray[2], undefined, _replacementArray[3]);
+                    }
+                    
+                    _i            += 2*(_replacementLength - 1); //Off-by-one to account for ++_i in the for-loop
+                    _stringLength += _replacementLength - _foundLength;
+                    
+                    //Recalculate our minibuffer since we've messed around with the array a lot
+                    _twoChar   =              ((_charArray[_i+2] & 0xFFFF) << 16);
+                    _threeChar = _twoChar   | ((_charArray[_i+4] & 0xFFFF) << 32);
+                    _fourChar  = _threeChar | ((_charArray[_i+6] & 0xFFFF) << 48);
                 }
             }
         }
         
-        //Perform a character replacement if we found any matching substring
-        if (_replacementArray != undefined)
-        {
-            var _replacementLength = array_length(_replacementArray);
-            
-            if ((_foundLength == 1) && (_replacementLength == 1))
-            {
-                //Shortcut for the most common replacement operation
-                _charArray[_i] = _replacementArray[0];
-            }
-            else
-            {
-                //Heavyweight general replacement code... we want to avoid as many delete/insert commands as
-                //possible as it causes lots of reallocation in the background
-                
-                array_delete(_charArray, _i-1, 2*_foundLength); //TODO - Copy tags
-                
-                if (_replacementLength == 1)
-                {
-                    array_insert(_charArray, _i-1, undefined, _replacementArray[0]);
-                }
-                else if (_replacementLength == 2)
-                {
-                    array_insert(_charArray, _i-1, undefined, _replacementArray[0], undefined, _replacementArray[1]);
-                }
-                else if (_replacementLength == 3)
-                {
-                    array_insert(_charArray, _i-1, undefined, _replacementArray[0], undefined, _replacementArray[1], undefined, _replacementArray[2]);
-                }
-                else //if (_replacementLength >= 4)
-                {
-                    array_insert(_charArray, _i-1, undefined, _replacementArray[0], undefined, _replacementArray[1], undefined, _replacementArray[2], undefined, _replacementArray[3]);
-                }
-                
-                _i            += 2*(_replacementLength - 1); //Off-by-one to account for ++_i in the for-loop
-                _stringLength += _replacementLength - _foundLength;
-                
-                //Recalculate our minibuffer since we've messed around with the array a lot
-                _twoChar   =              ((_charArray[_i+2] & 0xFFFF) << 16);
-                _threeChar = _twoChar   | ((_charArray[_i+4] & 0xFFFF) << 32);
-                _fourChar  = _threeChar | ((_charArray[_i+6] & 0xFFFF) << 48);
-            }
-        }
+        #endregion
+        
+        
+        
+        array_resize(_charArray, array_length(_charArray)-8);
+        array_push(_charArray, undefined, 0x00);
+        
+        _breakdownArray[_line] = _charArray;
+        ++_line
     }
     
-    #endregion
-    
-    
-    
-    array_resize(_charArray, array_length(_charArray)-8);
-    array_push(_charArray, undefined, 0x00);
-    
-    return TextFormattedRecompose(_charArray);
+    return _breakdownArray;
 }

@@ -1,28 +1,13 @@
-/// @param glyphArray
-/// @param rightToLeftHint
-/// @param [copy=true]
+/// @param breakdownArray
+/// @param [rightToLeftHint=true]
 
-function TextFormattedTransformR2L (_glyphArray, _rightToLeftHint, _copy = true)
+function TextFormattedTransformR2L(_breakdownArray, _rightToLeftHint = true)
 {
     static _bidiMap = TextGlyphData().bidiMap;
     
-    var _overallBidi = _rightToLeftHint? BIDI.R2L : BIDI.L2R;
-    if (_copy) _glyphArray = variable_clone(_glyphArray);
     
-    var _length = array_length(_glyphArray)/2 - 1;
-    if (_length <= 1) return _glyphArray
     
-    var _bidiArray = array_create(_length, undefined);
-    
-    //First sweep to set basic bi-directional information
-    var _i = 1;
-    repeat(_length)
-    {
-        var _glyph = _glyphArray[_i];
-        var _bidi  = _bidiMap[? _glyph];
-        _bidiArray[_i] = _bidi ?? BIDI.L2R;
-        _i += 2;
-    }
+    #region Support Functions
     
     var _funcDetermineBidi = function(_funcDetermineBidi, _overallBidi, _bidiArray, _length, _start, _searchDirection)
     {
@@ -120,44 +105,71 @@ function TextFormattedTransformR2L (_glyphArray, _rightToLeftHint, _copy = true)
         var _i = 2*_offset;
         repeat(_length)
         {
-            var _temp = _glyphArray[_i];
-            _glyphArray[_i] = _glyphArray[_i+1];
-            _glyphArray[_i+1] = _temp;
-            
+            array_reverse_ext(_glyphArray, _i, 2);
             _i += 2;
         }
     }
     
-    //Final pass to determine directionality for all glyphs
-    var _i = 0;
-    repeat(_length)
-    {
-        _funcDetermineBidi(_funcDetermineBidi, _overallBidi, _bidiArray, _length, _i, 0);
-        ++_i;
-    }
+    #endregion
     
-    //Reverse stretches of glyphs that do not conform to the overall direction
-    var _currentBidi = _bidiArray[0];
-    var _start = 0;
-    var _i = 1;
-    repeat(_length-1)
+    
+    
+    var _overallBidi = _rightToLeftHint? BIDI.R2L : BIDI.L2R;
+    
+    var _line = 0;
+    repeat(array_length(_breakdownArray))
     {
-        var _incomingBidi = _bidiArray[_i];
-        if (_incomingBidi != _currentBidi)
+        var _glyphArray = _breakdownArray[_line];
+        
+        var _length = array_length(_glyphArray)/2 - 1;
+        if (_length > 1)
         {
+            var _bidiArray = array_create(_length, undefined);
+            
+            //First sweep to set basic bi-directional information
+            var _i = 0;
+            repeat(_length)
+            {
+                var _glyph = _glyphArray[2*_i+1];
+                var _bidi  = _bidiMap[? _glyph];
+                _bidiArray[_i] = _bidi ?? BIDI.L2R;
+                ++_i;
+            }
+            
+            //Final pass to determine directionality for all glyphs
+            var _i = 0;
+            repeat(_length)
+            {
+                _funcDetermineBidi(_funcDetermineBidi, _overallBidi, _bidiArray, _length, _i, 0);
+                ++_i;
+            }
+            
+            //Reverse stretches of glyphs that do not conform to the overall direction
+            var _currentBidi = _bidiArray[0];
+            var _start = 0;
+            var _i = 1;
+            repeat(_length-1)
+            {
+                var _incomingBidi = _bidiArray[_i];
+                if (_incomingBidi != _currentBidi)
+                {
+                    if (_currentBidi != _overallBidi) _funcReverse(_glyphArray, _start, _i - _start);
+                    _currentBidi = _incomingBidi;
+                    _start = _i;
+                }
+                
+                ++_i;
+            }
+            
+            //Resolve the final stretch
             if (_currentBidi != _overallBidi) _funcReverse(_glyphArray, _start, _i - _start);
-            _currentBidi = _incomingBidi;
-            _start = _i;
+            
+            //If we're in right-to-left mode then reverse the whole lot
+            if (_overallBidi == BIDI.R2L) _funcReverse(_glyphArray, 0, _length);
         }
         
-        ++_i;
+        ++_line;
     }
     
-    //Resolve the final stretch
-    if (_currentBidi != _overallBidi) _funcReverse(_glyphArray, _start, _i - _start);
-    
-    //If we're in right-to-left mode then reverse the whole lot
-    if (_overallBidi == BIDI.R2L) _funcReverse(_glyphArray, 0, _length);
-    
-    return _glyphArray;
+    return _breakdownArray;
 }

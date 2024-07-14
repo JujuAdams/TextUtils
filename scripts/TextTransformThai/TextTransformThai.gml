@@ -129,4 +129,6 @@ function TextTransformThai(_breakdownArray)
         _breakdownArray[_line] = _outArray;
         ++_line;
     }
+    
+    return _breakdownArray;
 }

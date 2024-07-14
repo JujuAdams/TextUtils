@@ -1,7 +1,7 @@
 /// @param breakdownArray
 /// @param [rightToLeftHint=true]
 
-function TextTransformR2L(_breakdownArray, _rightToLeftHint)
+function TextTransformR2L(_breakdownArray, _rightToLeftHint = true)
 {
     static _bidiMap = TextGlyphData().bidiMap;
     

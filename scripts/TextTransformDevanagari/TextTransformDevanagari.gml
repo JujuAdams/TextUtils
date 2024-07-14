@@ -61,6 +61,7 @@ function TextTransformDevanagari(_breakdownArray)
     repeat(array_length(_breakdownArray))
     {
         var _charArray = _breakdownArray[_line];
+        
         array_pop(_charArray);
         var _stringLength = array_length(_charArray);
     
@@ -327,4 +328,6 @@ function TextTransformDevanagari(_breakdownArray)
         _breakdownArray[_line] = _charArray;
         ++_line;
     }
+    
+    return _breakdownArray;
 }

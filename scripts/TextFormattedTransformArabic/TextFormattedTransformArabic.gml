@@ -122,4 +122,5 @@ function TextFormattedTransformArabic(_breakdownArray)
         ++_line;
     }
     
+    return _breakdownArray;
 }
