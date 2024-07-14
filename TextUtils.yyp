@@ -40,6 +40,7 @@
     {"id":{"name":"TextDecompose","path":"scripts/TextDecompose/TextDecompose.yy",},},
     {"id":{"name":"TextFormDecompose","path":"scripts/TextFormDecompose/TextFormDecompose.yy",},},
     {"id":{"name":"TextFormParseArabic","path":"scripts/TextFormParseArabic/TextFormParseArabic.yy",},},
+    {"id":{"name":"TextFormParseDevanagari","path":"scripts/TextFormParseDevanagari/TextFormParseDevanagari.yy",},},
     {"id":{"name":"TextFormParseHebrew","path":"scripts/TextFormParseHebrew/TextFormParseHebrew.yy",},},
     {"id":{"name":"TextFormParseThai","path":"scripts/TextFormParseThai/TextFormParseThai.yy",},},
     {"id":{"name":"TextFormRecompose","path":"scripts/TextFormRecompose/TextFormRecompose.yy",},},
