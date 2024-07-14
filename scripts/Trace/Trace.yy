@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"Trace",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"Trace",
+  "parent":{
+    "name":"TextUtils",
+    "path":"TextUtils.yyp",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}

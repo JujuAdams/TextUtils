@@ -1,0 +1,12 @@
+{
+  "FolderOrderSettings":[],
+  "ResourceOrderSettings":[
+    {"name":"rMain","order":1,"path":"rooms/rMain/rMain.yy",},
+    {"name":"StringDecompose","order":2,"path":"scripts/StringDecompose/StringDecompose.yy",},
+    {"name":"StringJoin","order":5,"path":"scripts/StringJoin/StringJoin.yy",},
+    {"name":"StringSplit_1","order":6,"path":"scripts/StringSplit_1/StringSplit_1.yy",},
+    {"name":"StringSplit_2","order":4,"path":"scripts/StringSplit_2/StringSplit_2.yy",},
+    {"name":"StringSplit","order":3,"path":"scripts/StringSplit/StringSplit.yy",},
+    {"name":"Trace","order":7,"path":"scripts/Trace/Trace.yy",},
+  ],
+}

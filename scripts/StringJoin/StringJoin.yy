@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"StringJoin",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"StringJoin",
+  "parent":{
+    "name":"TextUtils",
+    "path":"TextUtils.yyp",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}

@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"StringSplit",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"StringSplit",
+  "parent":{
+    "name":"TextUtils",
+    "path":"TextUtils.yyp",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}
