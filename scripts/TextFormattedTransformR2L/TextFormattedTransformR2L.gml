@@ -132,7 +132,7 @@ function TextFormattedTransformR2L(_breakdownArray, _rightToLeftHint = true)
             {
                 var _glyph = _glyphArray[2*_i+1];
                 var _bidi  = _bidiMap[? _glyph];
-                _bidiArray[_i] = _bidi ?? BIDI.L2R;
+                _bidiArray[@ _i] = _bidi ?? BIDI.L2R;
                 ++_i;
             }
             

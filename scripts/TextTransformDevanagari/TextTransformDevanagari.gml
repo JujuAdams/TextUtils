@@ -325,7 +325,7 @@ function TextTransformDevanagari(_breakdownArray)
     
         array_resize(_charArray, array_length(_charArray)-4);
         
-        _breakdownArray[_line] = _charArray;
+        _breakdownArray[@ _line] = _charArray;
         ++_line;
     }
     

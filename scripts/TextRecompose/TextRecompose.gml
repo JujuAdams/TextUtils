@@ -15,10 +15,10 @@ function TextRecompose(_breakdownArray)
         
         array_foreach(_breakdownArray[_line], function(_element, _index)
         {
-            global.__TextRecompose_glyphArray[_index] = chr(_element);
+            global.__TextRecompose_glyphArray[@ _index] = chr(_element);
         });
         
-        _stringArray[_line] = string_concat_ext(global.__TextRecompose_glyphArray);
+        _stringArray[@ _line] = string_concat_ext(global.__TextRecompose_glyphArray);
         ++_line;
     }
     

@@ -133,7 +133,7 @@ function TextFormattedTransformThai(_breakdownArray)
             _i += 2;
         }
         
-        _breakdownArray[_line] = _outArray;
+        _breakdownArray[@ _line] = _outArray;
         ++_line;
     }
     

@@ -88,7 +88,7 @@ function TextFormattedDecompose(_string)
                         if (_tagArray == undefined)
                         {
                             _tagArray = [];
-                            _outArray[array_length(_outArray)-1] = _tagArray;
+                            _outArray[@ array_length(_outArray)-1] = _tagArray;
                         }
                         
                         //Split the tag into parameters

@@ -117,7 +117,7 @@ function TextFormattedTransformArabic(_breakdownArray)
         }
         
         array_push(_outGlyphArray, 0x00);
-        _breakdownArray[_line] = _outGlyphArray;
+        _breakdownArray[@ _line] = _outGlyphArray;
         
         ++_line;
     }

@@ -86,63 +86,63 @@ function TextFormattedTransformDevanagari(_breakdownArray)
                 //Set up alternating single quote marks
                 case ord("'"):
                     _inSingleQuote = !_inSingleQuote;
-                    _charArray[_i] = _inSingleQuote? ord("^") : ord("*");
+                    _charArray[@ _i] = _inSingleQuote? ord("^") : ord("*");
                 break;
                 
                 //Set up alternating double quote marks
                 case ord("\""):
                     _inDoubleQuote = !_inDoubleQuote;
-                    _charArray[_i] = _inDoubleQuote? ord("ß") : ord("Þ");
+                    _charArray[@ _i] = _inDoubleQuote? ord("ß") : ord("Þ");
                 break;
                 
                 //Split up nukta ligatures into their componant parts
                 case ord("ऩ"):
-                    _charArray[_i] = ord("न");
+                    _charArray[@ _i] = ord("न");
                     array_insert(_charArray, _i+1, undefined, 0x093C); _i += 2; ++_stringLength; //Nukta
                 break;
                 
                 case ord("ऱ"):
-                    _charArray[_i] = ord("र");
+                    _charArray[@ _i] = ord("र");
                     array_insert(_charArray, _i+1, undefined, 0x093C); _i += 2; ++_stringLength; //Nukta
                 break;
                 
                 case ord("क़"):
-                    _charArray[_i] = ord("क");
+                    _charArray[@ _i] = ord("क");
                     array_insert(_charArray, _i+1, undefined, 0x093C); _i += 2; ++_stringLength; //Nukta
                 break;
                 
                 case ord("ख़"):
-                    _charArray[_i] = ord("ख");
+                    _charArray[@ _i] = ord("ख");
                     array_insert(_charArray, _i+1, undefined, 0x093C); _i += 2; ++_stringLength; //Nukta
                 break;
                 
                 case ord("ग़"):
-                    _charArray[_i] = ord("ग");
+                    _charArray[@ _i] = ord("ग");
                     array_insert(_charArray, _i+1, undefined, 0x093C); _i += 2; ++_stringLength; //Nukta
                 break;
                 
                 case ord("ज़"):
-                    _charArray[_i] = ord("ज");
+                    _charArray[@ _i] = ord("ज");
                     array_insert(_charArray, _i+1, undefined, 0x093C); _i += 2; ++_stringLength; //Nukta
                 break;
                 
                 case ord("ड़"):
-                    _charArray[_i] = ord("ड");
+                    _charArray[@ _i] = ord("ड");
                     array_insert(_charArray, _i+1, undefined, 0x093C); _i += 2; ++_stringLength; //Nukta
                 break;
                 
                 case ord("ढ़"):
-                    _charArray[_i] = ord("ढ");
+                    _charArray[@ _i] = ord("ढ");
                     array_insert(_charArray, _i+1, undefined, 0x093C); _i += 2; ++_stringLength; //Nukta
                 break;
                 
                 case ord("फ़"):
-                    _charArray[_i] = ord("फ");
+                    _charArray[@ _i] = ord("फ");
                     array_insert(_charArray, _i+1, undefined, 0x093C); _i += 2; ++_stringLength; //Nukta
                 break;
                 
                 case ord("य़"):
-                    _charArray[_i] = ord("य");
+                    _charArray[@ _i] = ord("य");
                     array_insert(_charArray, _i+1, undefined, 0x093C); _i += 2; ++_stringLength; //Nukta
                 break;
             }
@@ -272,7 +272,7 @@ function TextFormattedTransformDevanagari(_breakdownArray)
                 if ((_foundLength == 1) && (_replacementLength == 1))
                 {
                     //Shortcut for the most common replacement operation
-                    _charArray[_i] = _replacementArray[0];
+                    _charArray[@ _i] = _replacementArray[0];
                 }
                 else
                 {
@@ -337,7 +337,7 @@ function TextFormattedTransformDevanagari(_breakdownArray)
         array_resize(_charArray, array_length(_charArray)-8);
         array_push(_charArray, undefined, 0x00);
         
-        _breakdownArray[_line] = _charArray;
+        _breakdownArray[@ _line] = _charArray;
         ++_line
     }
     

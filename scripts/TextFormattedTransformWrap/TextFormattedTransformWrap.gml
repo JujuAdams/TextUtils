@@ -93,7 +93,7 @@ function TextFormattedTransformWrap(_breakdownArray, _font, _limitWidth, _perCha
                                     array_copy(_tagStack, array_length(_tagStack), _startTagArray, 0, array_length(_startTagArray));
                                 }
                                 
-                                _lineArray[_index] = _tagStack;
+                                _lineArray[@ _index] = _tagStack;
                                 
                                 _tagStack = undefined;
                             }

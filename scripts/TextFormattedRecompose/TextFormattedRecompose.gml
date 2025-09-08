@@ -25,7 +25,7 @@ function TextFormattedRecompose(_breakdownArray)
         });
         
         //Concatenate chars
-        _stringArray[_line] = string_concat_ext(_filteredArray);
+        _stringArray[@ _line] = string_concat_ext(_filteredArray);
         ++_line;
     }
     

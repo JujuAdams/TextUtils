@@ -126,7 +126,7 @@ function TextTransformThai(_breakdownArray)
             ++_i;
         }
         
-        _breakdownArray[_line] = _outArray;
+        _breakdownArray[@ _line] = _outArray;
         ++_line;
     }
     
