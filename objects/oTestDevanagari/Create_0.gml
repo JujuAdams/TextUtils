@@ -1,6 +1,6 @@
 // Feather disable all
 
-index = 41;
+index = 42;
 
 testArray = [
 /*  0 */    { unicode: "गया", expected: "x;k" },
@@ -44,5 +44,8 @@ testArray = [
 /* 38 */    { unicode: "फ़िफ्टी", expected: "fQ¶Vh" },
 /* 39 */    { unicode: "और", expected: "vkSj" },
 /* 40 */    { unicode: "हम्म्...", expected: "gEe~---" },
-/* 41 */    { unicode: "ह[c_red]म्[c_blue]म्[c_white]...", expected: "gEe~---" },
+/* 41 */    { unicode: "ह[c_red]म्[c_blue]म्[c_white]...", expected: "" },
+/* 42 */    { unicode: "[c_red]त[c_blue]िय", expected: "" },
 ];
+
+// ि
