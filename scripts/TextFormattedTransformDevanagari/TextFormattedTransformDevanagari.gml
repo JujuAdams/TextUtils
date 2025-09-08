@@ -184,39 +184,9 @@ function TextFormattedTransformDevanagari(_breakdownArray)
                     }
                 }
                 
-                //Join together tags from replaced characters. This is imperfect. If people are individually
-                //colouring letters, for example, this code will show its weaknesses.
-                var _fTagArray = _charArray[_fPosition-1];
-                var _targetTagArray = _charArray[_j-1];
-                
-                if (is_array(_targetTagArray))
-                {
-                    if (is_array(_fTagArray))
-                    {
-                        _newTagsArray = array_concat(_targetTagArray, _fTagArray);
-                    }
-                    else
-                    {
-                        _newTagsArray = _targetTagArray;
-                    }
-                    
-                    //Clear out the target tags
-                    _charArray[@ _j-1] = undefined;
-                }
-                else
-                {
-                    if (is_array(_fTagArray))
-                    {
-                        _newTagsArray = _fTagArray;
-                    }
-                    else
-                    {
-                        _newTagsArray = undefined;
-                    }
-                }
-                
+                var _fTagsArray = _charArray[_fPosition-1];
                 array_delete(_charArray, _fPosition-1, 2);
-                array_insert(_charArray, _j-1, _newTagsArray, ord("f")); //FIXME - Copy tags
+                array_insert(_charArray, _j-1, _fTagsArray, ord("f"));
                 
                 _i = _fPosition;
             }
