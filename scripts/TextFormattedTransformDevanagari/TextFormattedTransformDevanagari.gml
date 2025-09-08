@@ -185,7 +185,7 @@ function TextFormattedTransformDevanagari(_breakdownArray)
                 }
                 
                 array_delete(_charArray, _fPosition-1, 2);
-                array_insert(_charArray, _j-1, undefined, ord("f")); //TODO - Copy tags
+                array_insert(_charArray, _j-1, undefined, ord("f")); //FIXME - Copy tags
                 
                 _i = _fPosition;
             }
@@ -214,7 +214,7 @@ function TextFormattedTransformDevanagari(_breakdownArray)
                     _charRight = _charArray[_probablePosition];
                 }
                 
-                array_insert(_charArray, _probablePosition-1, undefined, ord("Z")); //TODO - Copy tags
+                array_insert(_charArray, _probablePosition-1, undefined, ord("Z")); //FIXME - Copy tags
                 array_delete(_charArray, _i, 4);
                 
                 --_stringLength;
@@ -279,23 +279,44 @@ function TextFormattedTransformDevanagari(_breakdownArray)
                     //Heavyweight general replacement code... we want to avoid as many delete/insert commands as
                     //possible as it causes lots of reallocation in the background
                     
-                    array_delete(_charArray, _i-1, 2*_foundLength); //TODO - Copy tags
+                    //Join together tags from replaced characters. This is imperfect. If people are individually
+                    //colouring letters, for example, this code will show its weaknesses.
+                    var _newTagsArray = undefined;
+                    var _j = _i-1;
+                    repeat(_foundLength)
+                    {
+                        if (is_array(_charArray[_j]))
+                        {
+                            if (not is_array(_newTagsArray))
+                            {
+                                _newTagsArray = [];
+                            }
+                            
+                            array_copy(_newTagsArray, array_length(_newTagsArray), _charArray[_j], 0, array_length(_charArray[_j]));
+                        }
+                        
+                        _j += 2;
+                    }
                     
+                    //Remove replaced characters
+                    array_delete(_charArray, _i-1, 2*_foundLength);
+                    
+                    //Insert new characters
                     if (_replacementLength == 1)
                     {
-                        array_insert(_charArray, _i-1, undefined, _replacementArray[0]);
+                        array_insert(_charArray, _i-1, _newTagsArray, _replacementArray[0]);
                     }
                     else if (_replacementLength == 2)
                     {
-                        array_insert(_charArray, _i-1, undefined, _replacementArray[0], undefined, _replacementArray[1]);
+                        array_insert(_charArray, _i-1, _newTagsArray, _replacementArray[0], undefined, _replacementArray[1]);
                     }
                     else if (_replacementLength == 3)
                     {
-                        array_insert(_charArray, _i-1, undefined, _replacementArray[0], undefined, _replacementArray[1], undefined, _replacementArray[2]);
+                        array_insert(_charArray, _i-1, _newTagsArray, _replacementArray[0], undefined, _replacementArray[1], undefined, _replacementArray[2]);
                     }
                     else //if (_replacementLength >= 4)
                     {
-                        array_insert(_charArray, _i-1, undefined, _replacementArray[0], undefined, _replacementArray[1], undefined, _replacementArray[2], undefined, _replacementArray[3]);
+                        array_insert(_charArray, _i-1, _newTagsArray, _replacementArray[0], undefined, _replacementArray[1], undefined, _replacementArray[2], undefined, _replacementArray[3]);
                     }
                     
                     _i            += 2*(_replacementLength - 1); //Off-by-one to account for ++_i in the for-loop
