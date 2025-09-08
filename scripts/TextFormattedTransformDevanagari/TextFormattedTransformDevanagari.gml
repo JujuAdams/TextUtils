@@ -57,6 +57,29 @@ function TextFormattedTransformDevanagari(_breakdownArray)
     static _matraLookupMap = TextGlyphData().devanagariMatraMap;
     static _lookupMap      = TextGlyphData().devanagariLookupMap;
     
+    static __CombineTags = function(_charArray, _start, _count)
+    {
+        var _newTagsArray = undefined;
+        
+        var _i = _start;
+        repeat(_count)
+        {
+            if (is_array(_charArray[_i]))
+            {
+                if (not is_array(_newTagsArray))
+                {
+                    _newTagsArray = [];
+                }
+                
+                array_copy(_newTagsArray, array_length(_newTagsArray), _charArray[_i], 0, array_length(_charArray[_i]));
+            }
+            
+            _i += 2;
+        }
+        
+        return _newTagsArray;
+    }
+    
     var _line = 0;
     repeat(array_length(_breakdownArray))
     {
@@ -168,13 +191,13 @@ function TextFormattedTransformDevanagari(_breakdownArray)
                 var _j = _i - 2;
                 while(_j >= 1)
                 {
-                    if (_charArray[_j] == 0x094D)
+                    if (_charArray[_j] == 0x094D) //virama ◌्
                     {
                         //If we find a virama behind us keep tracking backwards
                         //We go two indexes backwards because virama (should) always follows another character
                         _j -= 4;
                     }
-                    else if (_charArray[_j] == 0x093C) //Nukta
+                    else if (_charArray[_j] == 0x093C) //nukta ◌़
                     {
                         _j -= 2;
                     }
@@ -184,7 +207,9 @@ function TextFormattedTransformDevanagari(_breakdownArray)
                     }
                 }
                 
+                //Copy tags from the position we're about to delete
                 var _fTagsArray = _charArray[_fPosition-1];
+                
                 array_delete(_charArray, _fPosition-1, 2);
                 array_insert(_charArray, _j-1, _fTagsArray, ord("f"));
                 
@@ -204,7 +229,7 @@ function TextFormattedTransformDevanagari(_breakdownArray)
         for(var _i = 1; _i < 2*_stringLength; _i += 2)
         {
             //TODO - Log where ra-virama is found during the nukta ligature sweep
-            if ((_charArray[_i] == ord("र")) && (_charArray[_i+2] == 0x094D)) //Ra followed by virama
+            if ((_charArray[_i] == 0x0930) && (_charArray[_i+2] == 0x094D)) //Ra र followed by virama ◌्
             {
                 var _probablePosition = _i + 6;
                 
@@ -215,8 +240,11 @@ function TextFormattedTransformDevanagari(_breakdownArray)
                     _charRight = _charArray[_probablePosition];
                 }
                 
-                array_insert(_charArray, _probablePosition-1, undefined, ord("Z")); //FIXME - Copy tags
-                array_delete(_charArray, _i, 4);
+                //Copy the soon-to-be-deleted tags
+                _charArray[@ _i+3] = __CombineTags(_charArray, _i-1, 3);
+                
+                array_insert(_charArray, _probablePosition-1, undefined, ord("Z"));
+                array_delete(_charArray, _i-1, 4);
                 
                 --_stringLength;
             }
@@ -282,22 +310,7 @@ function TextFormattedTransformDevanagari(_breakdownArray)
                     
                     //Join together tags from replaced characters. This is imperfect. If people are individually
                     //colouring letters, for example, this code will show its weaknesses.
-                    var _newTagsArray = undefined;
-                    var _j = _i-1;
-                    repeat(_foundLength)
-                    {
-                        if (is_array(_charArray[_j]))
-                        {
-                            if (not is_array(_newTagsArray))
-                            {
-                                _newTagsArray = [];
-                            }
-                            
-                            array_copy(_newTagsArray, array_length(_newTagsArray), _charArray[_j], 0, array_length(_charArray[_j]));
-                        }
-                        
-                        _j += 2;
-                    }
+                    var _newTagsArray = __CombineTags(_charArray, _i-1, _foundLength);
                     
                     //Remove replaced characters
                     array_delete(_charArray, _i-1, 2*_foundLength);
