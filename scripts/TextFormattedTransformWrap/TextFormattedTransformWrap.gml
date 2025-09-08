@@ -70,7 +70,7 @@ function TextFormattedTransformWrap(_breakdownArray, _font, _limitWidth, _perCha
                             if ((_x > 0) && (_x + _wordWidth > _limitWidth))
                             {
                                 //Terminator
-                                array_push(_lineArray, 0x00);
+                                array_push(_lineArray, undefined, 0x00);
                                 
                                 //Push a line to our breakdown array
                                 var _lineArray = [];
@@ -135,13 +135,9 @@ function TextFormattedTransformWrap(_breakdownArray, _font, _limitWidth, _perCha
                 
                 _i += 2;
             }
-            
-            //Terminator
-            array_push(_lineArray, _tagStack, 0x00);
         }
         else
         {
-            
             repeat((array_length(_glyphArray) div 2)-1)
             {
                 var _foundTagArray = _glyphArray[_i];
@@ -153,7 +149,7 @@ function TextFormattedTransformWrap(_breakdownArray, _font, _limitWidth, _perCha
                 if ((_x > 0) && (_x + _glyphData.w > _limitWidth))
                 {
                     //Terminator
-                    array_push(_lineArray, 0x00);
+                    array_push(_lineArray, undefined, 0x00);
                     
                     //Push a line to our breakdown array
                     var _lineArray = [];
