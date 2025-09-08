@@ -18,6 +18,8 @@
     {"name":"oTestThai","order":7,"path":"objects/oTestThai/oTestThai.yy",},
     {"name":"oTestWrap","order":9,"path":"objects/oTestWrap/oTestWrap.yy",},
     {"name":"rMain","order":1,"path":"rooms/rMain/rMain.yy",},
+    {"name":"TextFormattedBuildDraw","order":7,"path":"scripts/TextFormattedBuildDraw/TextFormattedBuildDraw.yy",},
+    {"name":"TextFormattedDraw","order":8,"path":"scripts/TextFormattedDraw/TextFormattedDraw.yy",},
     {"name":"TextFormattedRecompose","order":1,"path":"scripts/TextFormattedRecompose/TextFormattedRecompose.yy",},
     {"name":"TextFormattedTransformArabic","order":2,"path":"scripts/TextFormattedTransformArabic/TextFormattedTransformArabic.yy",},
     {"name":"TextFormattedTransformDevanagari","order":4,"path":"scripts/TextFormattedTransformDevanagari/TextFormattedTransformDevanagari.yy",},
